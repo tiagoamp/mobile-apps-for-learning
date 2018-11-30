@@ -25,6 +25,12 @@ public class FormularioActivity extends AppCompatActivity {
 
         helper = new FormularioHelper(this);
 
+        Intent intent = getIntent();
+        Aluno aluno = (Aluno)  intent.getSerializableExtra("aluno");
+        if (aluno != null) {
+            helper.preencheFormulario(aluno);
+        }
+
         /*Button botaoSalvar = (Button) findViewById(R.id.formulario_salvar);
         botaoSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
