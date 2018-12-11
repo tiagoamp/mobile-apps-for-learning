@@ -1,18 +1,9 @@
 package com.exampleapp.agenda;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
-
-import com.exampleapp.agenda.model.Prova;
-
-import java.util.Arrays;
-import java.util.List;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 
 public class ProvasActivity extends AppCompatActivity {
 
@@ -21,30 +12,20 @@ public class ProvasActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_provas);
 
-        List<String> topicosPort = Arrays.asList("Sujeito", "Objeto direto", "Objeto indireto");
-        Prova provaPortugues = new Prova("Portugues", "25/05/2018", topicosPort);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction tx = fragmentManager.beginTransaction();
 
-        List<String> topicosMat = Arrays.asList("Equacoes de segundo grau", "Trigonometria");
-        Prova provaMatematica = new Prova("Matematica", "27/05/2018", topicosMat);
+        tx.replace(R.id.frame_principal, new ListaProvasFragment());
+        if (estaNoModoPaisagem()) {
+            tx.replace(R.id.frame_secundario, new DetalhesProvaFragment());
+        }
 
-        List<Prova> provas = Arrays.asList(provaPortugues, provaMatematica);
+        tx.commit();
+    }
 
-        ArrayAdapter<Prova> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, provas);
 
-        ListView lista = (ListView) findViewById(R.id.provas_lista);
-        lista.setAdapter(adapter);
-
-        lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Prova prova = (Prova) parent.getItemAtPosition(position);
-                Toast.makeText(ProvasActivity.this, "Clicou na prova de " + prova, Toast.LENGTH_LONG).show();
-                Intent vaiParaDetalhes = new Intent(ProvasActivity.this, DetalhesProvaActivity.class);
-                vaiParaDetalhes.putExtra("prova", prova);
-                startActivity(vaiParaDetalhes);
-            }
-        });
-
+    private boolean estaNoModoPaisagem() {
+        return getResources().getBoolean(R.bool.modoPaisagem);
     }
 
 
