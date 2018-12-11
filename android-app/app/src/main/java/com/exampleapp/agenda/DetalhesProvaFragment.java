@@ -21,7 +21,7 @@ public class DetalhesProvaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_detalhes_prova, container, false);
 
 
-        return
+        return view;
     }
 
 }
