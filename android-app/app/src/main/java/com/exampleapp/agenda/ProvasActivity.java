@@ -38,7 +38,7 @@ public class ProvasActivity extends AppCompatActivity {
             detalhesFragment.setArguments(parametros);
 
             tx.replace(R.id.frame_principal, detalhesFragment);
-            tx.addToBackStack(null);   // back to include the fragment to the stack 
+            tx.addToBackStack(null);   // back to include the fragment to the stack
 
             tx.commit();
 
