@@ -1,5 +1,6 @@
 package com.exampleapp.exampleviagens.ui.activity;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,7 +13,10 @@ import com.exampleapp.exampleviagens.util.DataUtil;
 import com.exampleapp.exampleviagens.util.MoedaUtil;
 import com.exampleapp.exampleviagens.util.ResourcesUtil;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+
+import static com.exampleapp.exampleviagens.ui.activity.PacoteActivityConstants.CHAVE_PACOTE;
 
 public class ResumoCompraActivity extends AppCompatActivity {
 
@@ -25,13 +29,22 @@ public class ResumoCompraActivity extends AppCompatActivity {
 
         setTitle(TITULO_APP_BAR);
 
-        Pacote pacoteSaoPaulo = new Pacote("São Paulo", "sao_paulo_sp", 2, new BigDecimal("245.99"));
+        carregaPacoteRecebido();
+    }
 
-        mostraLocal(pacoteSaoPaulo);
-        mostraImagem(pacoteSaoPaulo);
-        mostraData(pacoteSaoPaulo);
-        mostraPreco(pacoteSaoPaulo);
+    private void carregaPacoteRecebido() {
+        Intent intent = getIntent();
+        if (intent.hasExtra(CHAVE_PACOTE)) {
+            Pacote pacote = (Pacote) intent.getSerializableExtra(CHAVE_PACOTE);
+            inicializaCampos(pacote);
+        }
+    }
 
+    private void inicializaCampos(Pacote pacote) {
+        mostraLocal(pacote);
+        mostraImagem(pacote);
+        mostraData(pacote);
+        mostraPreco(pacote);
     }
 
     private void mostraPreco(Pacote pacote) {
