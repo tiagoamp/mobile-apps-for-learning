@@ -4,27 +4,28 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.provider.Browser;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.exampleapp.agenda.adapter.AlunosAdapter;
-import com.exampleapp.agenda.converter.AlunoConverter;
 import com.exampleapp.agenda.dao.AlunoDAO;
 import com.exampleapp.agenda.model.Aluno;
+import com.exampleapp.agenda.retrofit.RetrofitInicializador;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ListaAlunosActivity extends AppCompatActivity {
 
@@ -64,6 +65,23 @@ public class ListaAlunosActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        Call<List<Aluno>> call = new RetrofitInicializador().getAlunoService().lista();
+        call.enqueue(new Callback<List<Aluno>>() {
+            @Override
+            public void onResponse(Call<List<Aluno>> call, Response<List<Aluno>> response) {
+                List<Aluno> alunos = response.body();
+                AlunoDAO dao = new AlunoDAO(ListaAlunosActivity.this);
+                dao.sincroniza(alunos);
+                dao.close();
+            }
+
+            @Override
+            public void onFailure(Call<List<Aluno>> call, Throwable t) {
+                Log.e("onFailure chamado", t.getMessage());
+            }
+        });
+
         carregaLista();
     }
 
@@ -154,6 +172,11 @@ public class ListaAlunosActivity extends AppCompatActivity {
     private void carregaLista() {
         AlunoDAO dao = new AlunoDAO(this);
         List<Aluno> alunos = dao.buscaAlunos();
+
+        for (Aluno aluno : alunos) {
+            Log.i("id do aluno: ", String.valueOf(aluno.getId()));
+        }
+
         dao.close();
 
         //ArrayAdapter<Aluno> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, alunos);
