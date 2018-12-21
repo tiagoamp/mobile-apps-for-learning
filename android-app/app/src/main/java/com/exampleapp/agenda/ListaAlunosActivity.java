@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import com.exampleapp.agenda.adapter.AlunosAdapter;
 import com.exampleapp.agenda.dao.AlunoDAO;
+import com.exampleapp.agenda.dto.AlunoSync;
 import com.exampleapp.agenda.model.Aluno;
 import com.exampleapp.agenda.retrofit.RetrofitInicializador;
 
@@ -66,18 +67,20 @@ public class ListaAlunosActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        Call<List<Aluno>> call = new RetrofitInicializador().getAlunoService().lista();
-        call.enqueue(new Callback<List<Aluno>>() {
+        Call<AlunoSync> call = new RetrofitInicializador().getAlunoService().lista();
+
+        call.enqueue(new Callback<AlunoSync>() {
             @Override
-            public void onResponse(Call<List<Aluno>> call, Response<List<Aluno>> response) {
-                List<Aluno> alunos = response.body();
+            public void onResponse(Call<AlunoSync> call, Response<AlunoSync> response) {
+                AlunoSync alunoSync = response.body();
                 AlunoDAO dao = new AlunoDAO(ListaAlunosActivity.this);
-                dao.sincroniza(alunos);
+                dao.sincroniza(alunoSync.getAlunos());
                 dao.close();
+                carregaLista();
             }
 
             @Override
-            public void onFailure(Call<List<Aluno>> call, Throwable t) {
+            public void onFailure(Call<AlunoSync> call, Throwable t) {
                 Log.e("onFailure chamado", t.getMessage());
             }
         });
