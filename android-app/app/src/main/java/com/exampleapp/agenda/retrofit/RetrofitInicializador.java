@@ -1,6 +1,7 @@
 package com.exampleapp.agenda.retrofit;
 
 import com.exampleapp.agenda.services.AlunoService;
+import com.exampleapp.agenda.services.DispositivoService;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -29,4 +30,5 @@ public class RetrofitInicializador {
         return retrofit.create(AlunoService.class);
     }
 
+    public DispositivoService getDispositivoService() { return retrofit.create(DispositivoService.class); }
 }
