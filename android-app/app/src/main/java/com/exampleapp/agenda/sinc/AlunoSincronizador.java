@@ -15,6 +15,9 @@ import com.exampleapp.agenda.retrofit.RetrofitInicializador;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -41,17 +44,20 @@ public class AlunoSincronizador {
         }
     }
 
-    public void sincronzaAlunosInternos() {
+    private void sincronzaAlunosInternos() {
         final AlunoDAO dao = new AlunoDAO(context);
         List<Aluno> alunos = dao.listaNaoSincronizados();
+        dao.close();
 
         Call<AlunoSync> call = new RetrofitInicializador().getAlunoService().atualiza(alunos);
         call.enqueue(new Callback<AlunoSync>() {
             @Override
             public void onResponse(Call<AlunoSync> call, Response<AlunoSync> response) {
                 AlunoSync alunoSync = response.body();
-                dao.sincroniza(alunoSync.getAlunos());
-                dao.close();
+                //dao.sincroniza(alunoSync.getAlunos());
+                //dao.close();
+                sincroniza(alunoSync);
+
             }
 
             @Override
@@ -79,17 +85,13 @@ public class AlunoSincronizador {
             @Override
             public void onResponse(Call<AlunoSync> call, Response<AlunoSync> response) {
                 AlunoSync alunoSync = response.body();
-                String versao = alunoSync.getMomentoDaUltimaModificacao();
-
-                preferences.salvaVersao(versao);
-
-                AlunoDAO dao = new AlunoDAO(context);
-                dao.sincroniza(alunoSync.getAlunos());
-                dao.close();
+                sincroniza(alunoSync);
 
                 Log.i("versao", preferences.getVersao());
 
                 bus.post(new AtualizaListaAlunoEvent());
+
+                sincronzaAlunosInternos();
             }
 
             @Override
@@ -98,6 +100,38 @@ public class AlunoSincronizador {
                 bus.post(new AtualizaListaAlunoEvent());
             }
         };
+    }
+
+    public void sincroniza(AlunoSync alunoSync) {
+        String versao = alunoSync.getMomentoDaUltimaModificacao();
+
+        if (temVersaoNova(versao)) {
+            preferences.salvaVersao(versao);
+            Log.i("versao atual", preferences.getVersao());
+
+            AlunoDAO dao = new AlunoDAO(context);
+            dao.sincroniza(alunoSync.getAlunos());
+            dao.close();
+        }
+
+    }
+
+    private boolean temVersaoNova(String versao) {
+        if (!preferences.temVersao())
+            return true;
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
+        try{
+            Date dataExterna = format.parse(versao);
+            String versaoInterna = preferences.getVersao();
+            Date dataInterna = format.parse(versaoInterna);
+            return dataExterna.after(dataInterna);
+        } catch(ParseException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     public void deleta(final Aluno aluno) {
