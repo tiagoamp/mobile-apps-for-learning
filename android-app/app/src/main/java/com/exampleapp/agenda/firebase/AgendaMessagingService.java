@@ -5,6 +5,7 @@ import android.util.Log;
 import com.exampleapp.agenda.dao.AlunoDAO;
 import com.exampleapp.agenda.dto.AlunoSync;
 import com.exampleapp.agenda.event.AtualizaListaAlunoEvent;
+import com.exampleapp.agenda.sinc.AlunoSincronizador;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -36,9 +37,7 @@ public class AgendaMessagingService extends FirebaseMessagingService {
             ObjectMapper mapper = new ObjectMapper();
             try {
                 AlunoSync alunoSync = mapper.readValue(json, AlunoSync.class);
-                AlunoDAO alunoDAO = new AlunoDAO(this);
-                alunoDAO.sincroniza(alunoSync.getAlunos());
-                alunoDAO.close();
+                new AlunoSincronizador(AgendaMessagingService.this).sincroniza(alunoSync);
                 EventBus eventBus = EventBus.getDefault();
                 eventBus.post(new AtualizaListaAlunoEvent());
             } catch (IOException e) {
