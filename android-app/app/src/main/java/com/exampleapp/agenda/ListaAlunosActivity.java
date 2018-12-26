@@ -20,10 +20,10 @@ import android.widget.Toast;
 
 import com.exampleapp.agenda.adapter.AlunosAdapter;
 import com.exampleapp.agenda.dao.AlunoDAO;
-import com.exampleapp.agenda.dto.AlunoSync;
 import com.exampleapp.agenda.event.AtualizaListaAlunoEvent;
 import com.exampleapp.agenda.model.Aluno;
 import com.exampleapp.agenda.retrofit.RetrofitInicializador;
+import com.exampleapp.agenda.sinc.AlunoSincronizador;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -37,6 +37,7 @@ import retrofit2.Response;
 
 public class ListaAlunosActivity extends AppCompatActivity {
 
+    private final AlunoSincronizador sincronizador = new AlunoSincronizador(this);
     private ListView listaAlunos;
     private SwipeRefreshLayout swipe;
 
@@ -54,7 +55,8 @@ public class ListaAlunosActivity extends AppCompatActivity {
         swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                buscaAlunos();
+                sincronizador.buscaTodos();
+                sincronizador.sincronzaAlunosInternos();
             }
         });
 
@@ -80,7 +82,8 @@ public class ListaAlunosActivity extends AppCompatActivity {
 
         registerForContextMenu(listaAlunos);
 
-        buscaAlunos();
+        sincronizador.buscaTodos();
+        sincronizador.sincronzaAlunosInternos();
     }
 
     @Override
@@ -92,29 +95,8 @@ public class ListaAlunosActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void atualizaListaAlunoEvent(AtualizaListaAlunoEvent event){
+        if (swipe.isRefreshing()) swipe.setRefreshing(false);
         carregaLista();
-    }
-
-    private void buscaAlunos() {
-        Call<AlunoSync> call = new RetrofitInicializador().getAlunoService().lista();
-
-        call.enqueue(new Callback<AlunoSync>() {
-            @Override
-            public void onResponse(Call<AlunoSync> call, Response<AlunoSync> response) {
-                AlunoSync alunoSync = response.body();
-                AlunoDAO dao = new AlunoDAO(ListaAlunosActivity.this);
-                dao.sincroniza(alunoSync.getAlunos());
-                dao.close();
-                carregaLista();
-                swipe.setRefreshing(false);
-            }
-
-            @Override
-            public void onFailure(Call<AlunoSync> call, Throwable t) {
-                Log.e("onFailure chamado", t.getMessage());
-                swipe.setRefreshing(false);
-            }
-        });
     }
 
     @Override
@@ -166,21 +148,12 @@ public class ListaAlunosActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 //Toast.makeText(ListaAlunosActivity.this, "Deletar o aluno" + aluno.getNome(), Toast.LENGTH_SHORT).show();
 
-                Call<Void> call = new RetrofitInicializador().getAlunoService().deleta(aluno.getId());
-                call.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        AlunoDAO dao = new AlunoDAO(ListaAlunosActivity.this);
-                        dao.deleta(aluno);
-                        dao.close();
-                        carregaLista();
-                    }
+                AlunoDAO dao = new AlunoDAO(ListaAlunosActivity.this);
+                dao.deleta(aluno);
+                dao.close();
+                carregaLista();
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(ListaAlunosActivity.this, "Não foi possível remover o aluno.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                sincronizador.deleta(aluno);
 
                 return false;
             }
@@ -218,6 +191,7 @@ public class ListaAlunosActivity extends AppCompatActivity {
 
         for (Aluno aluno : alunos) {
             Log.i("id do aluno: ", String.valueOf(aluno.getId()));
+            Log.i("aluno sincronizado: ", String.valueOf(aluno.getSincronizado()));
         }
 
         dao.close();
