@@ -1,0 +1,3 @@
+rootProject.name = 'InstaLuraMob'
+
+include ':app'
