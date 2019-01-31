@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, Dimensions, ScrollView, FlatList} from 'react-native';
+import {Platform, StyleSheet, Text, View, Image, Dimensions, ScrollView, FlatList, TouchableOpacity} from 'react-native';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -10,26 +10,48 @@ const width = Dimensions.get('screen').width;
 
 export default class Post extends Component {
 
-  render() {
-    return (
-        <View>
-            <View style={styles.cabecalho} >
-                <Image source={require('../../resources/img/reactnative.png')} style={styles.fotoDePerfil} />
-                <Text>{this.props.foto.usuario}</Text>
+    constructor(props) {
+        super(props);
+        this.state = { foto: this.props.foto };
+    }
+
+    carregaIcone(likeada) {
+        return likeada ? require('../../resources/img/s2-checked.png') : require('../../resources/img/s2.png');
+    }
+
+    like(){
+        const fotoAtualizada = { ...this.state.foto, likeada: !this.state.foto.likeada };      
+        this.setState({foto: fotoAtualizada});
+    }
+
+    render() {
+        const { foto } = this.state;
+
+        return (
+            <View>
+                <View style={styles.cabecalho} >
+                    <Image source={require('../../resources/img/reactnative.png')} style={styles.fotoDePerfil} />
+                    <Text>{foto.usuario}</Text>
+                </View>
+                <Image source={require('../../resources/img/reactnative.png')} style={styles.foto} />
+                <View style={styles.rodape}>
+                    <TouchableOpacity onPress={this.like.bind(this)}>
+                        <Image style={styles.botaoDeLike} source={this.carregaIcone(foto.likeada)} />
+                    </TouchableOpacity>
+                </View>
             </View>
-            <Image source={require('../../resources/img/reactnative.png')} style={styles.foto} />
-        </View>
-        
-      // <ScrollView style={{marginTop: 20}}>
-      //   {fotos.map(foto =>
-      //       <View key={foto.id}>
-      //         <Text>{foto.usuario}</Text>
-      //         <Image source={require('./resources/img/reactnative.png')} style={{width:width, height:width}} />
-      //       </View>
-      //   )}
-      // </ScrollView>
-    );
-  }
+            
+        // <ScrollView style={{marginTop: 20}}>
+        //   {fotos.map(foto =>
+        //       <View key={foto.id}>
+        //         <Text>{foto.usuario}</Text>
+        //         <Image source={require('./resources/img/reactnative.png')} style={{width:width, height:width}} />
+        //       </View>
+        //   )}
+        // </ScrollView>
+        );
+    }
+
 }
 
 const styles = StyleSheet.create({
@@ -46,5 +68,12 @@ const styles = StyleSheet.create({
   foto: {
     width:width, 
     height:width
+  }, 
+  botaoDeLike: {
+    width: 40,
+    height: 40
+  },
+  rodape: {
+    margin: 10
   }
 })
