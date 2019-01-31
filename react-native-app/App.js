@@ -27,9 +27,9 @@ export default class App extends Component<Props> {
   }
 
   componentDidMount() {
-    this.setState( { fotos: [ {id: 1, usuario: 'tiagoamp', likeada: false}, 
-                              {id: 2, usuario: 'ozzy', likeada: true}, 
-                              {id: 3, usuario: 'max', likeada: false} 
+    this.setState( { fotos: [ {id: 1, usuario: 'tiagoamp', likeada: false, likers: [], comentario: 'comentario 01'}, 
+                              {id: 2, usuario: 'ozzy', likeada: true, likers: ['tiagoamp', 'max'], comentario: 'comentario 02'}, 
+                              {id: 3, usuario: 'max', likeada: false, likers: [], comentario: ''} 
                             ] } );    
   }
 
