@@ -21,11 +21,19 @@ const width = Dimensions.get('screen').width;
 type Props = {};
 export default class App extends Component<Props> {
 
+  constructor() {
+    super();
+    this.state = { fotos: [] };
+  }
+
+  componentDidMount() {
+    this.setState( { fotos: [ {id: 1, usuario: 'tiagoamp'}, {id: 2, usuario: 'ozzy'}, {id: 3, usuario: 'max'} ] } );    
+  }
+
   render() {
-    const fotos = [ {id: 1, usuario: 'tiagoamp'}, {id: 2, usuario: 'ozzy'}, {id: 3, usuario: 'max'} ];
 
     return (
-      <FlatList style={styles.container} data={fotos} keyExtractor={item => item.id}
+      <FlatList style={styles.container} data={this.state.fotos} keyExtractor={item => item.id}
           renderItem={ ({item}) => 
               <Post foto={item} /> 
           }
