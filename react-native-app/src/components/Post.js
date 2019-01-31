@@ -24,6 +24,16 @@ export default class Post extends Component {
         this.setState({foto: fotoAtualizada});
     }
 
+    exibeLegenda(foto) {
+        if (foto.comentario === '') return;
+        return (
+            <View style={styles.comentario}>
+                <Text style={styles.tituloComentario}>{foto.usuario}</Text>
+                <Text>{foto.comentario}</Text>
+            </View>
+        );
+    }
+
     render() {
         const { foto } = this.state;
 
@@ -38,6 +48,10 @@ export default class Post extends Component {
                     <TouchableOpacity onPress={this.like.bind(this)}>
                         <Image style={styles.botaoDeLike} source={this.carregaIcone(foto.likeada)} />
                     </TouchableOpacity>
+                    <Text style={styles.likes}> {foto.likers.length} curtidas</Text>
+
+                    {this.exibeLegenda(foto)}
+                    
                 </View>
             </View>
             
@@ -71,9 +85,20 @@ const styles = StyleSheet.create({
   }, 
   botaoDeLike: {
     width: 40,
-    height: 40
+    height: 40, 
+    marginBottom: 10
   },
   rodape: {
     margin: 10
+  }, 
+  likes: {
+    fontWeight: 'bold'
+  }, 
+  comentario: {
+    flexDirection: 'row'
+  },
+  tituloComentario: {
+    fontWeight: 'bold',
+    marginRight: 5
   }
 })
