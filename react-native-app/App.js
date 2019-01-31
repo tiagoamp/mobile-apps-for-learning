@@ -27,7 +27,10 @@ export default class App extends Component<Props> {
   }
 
   componentDidMount() {
-    this.setState( { fotos: [ {id: 1, usuario: 'tiagoamp'}, {id: 2, usuario: 'ozzy'}, {id: 3, usuario: 'max'} ] } );    
+    this.setState( { fotos: [ {id: 1, usuario: 'tiagoamp', likeada: false}, 
+                              {id: 2, usuario: 'ozzy', likeada: true}, 
+                              {id: 3, usuario: 'max', likeada: false} 
+                            ] } );    
   }
 
   render() {
