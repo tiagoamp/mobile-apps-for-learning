@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, Dimensions, ScrollView, FlatList, TouchableOpacity} from 'react-native';
+import {Platform, StyleSheet, Text, View, Image, Dimensions, ScrollView, FlatList, TouchableOpacity, TextInput} from 'react-native';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -68,17 +68,14 @@ export default class Post extends Component {
                         </View>
                     )}
                     
+                    <View style={styles.novoComentario}>
+                        <TextInput style={styles.input} placeholder="Adicione um comentário..." />
+                        <Image style={styles.icone} source={ require('../../resources/img/send.png') } />
+                    </View>
+
                 </View>
             </View>
             
-        // <ScrollView style={{marginTop: 20}}>
-        //   {fotos.map(foto =>
-        //       <View key={foto.id}>
-        //         <Text>{foto.usuario}</Text>
-        //         <Image source={require('./resources/img/reactnative.png')} style={{width:width, height:width}} />
-        //       </View>
-        //   )}
-        // </ScrollView>
         );
     }
 
@@ -116,5 +113,19 @@ const styles = StyleSheet.create({
   tituloComentario: {
     fontWeight: 'bold',
     marginRight: 5
+  }, 
+  input: {
+    flex: 1,
+    height: 40
+  }, 
+  novoComentario: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  icone: {
+    width: 30,
+    height: 30
   }
 })
