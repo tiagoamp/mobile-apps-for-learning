@@ -20,7 +20,16 @@ export default class Post extends Component {
     }
 
     like(){
-        const fotoAtualizada = { ...this.state.foto, likeada: !this.state.foto.likeada };      
+        const { foto } = this.state;
+        let novaLista = [];      
+        if(!foto.likeada){
+          novaLista = [...foto.likers, {usuario: 'tiagoamp'}];
+        } else{
+          novaLista = foto.likers.filter(liker => {
+            return liker.login !== 'tiagoamp';
+          });
+        }
+        const fotoAtualizada = { ...foto, likeada: !foto.likeada, likers: novaLista }      
         this.setState({foto: fotoAtualizada});
     }
 
@@ -51,6 +60,13 @@ export default class Post extends Component {
                     <Text style={styles.likes}> {foto.likers.length} curtidas</Text>
 
                     {this.exibeLegenda(foto)}
+
+                    {foto.comentarios.map(comentario => 
+                        <View style={styles.comentario} key={comentario.id}>
+                            <Text style={styles.tituloComentario}>{comentario.login}</Text>
+                            <Text>{comentario.texto}</Text>
+                        </View>
+                    )}
                     
                 </View>
             </View>
