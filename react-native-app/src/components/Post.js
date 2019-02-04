@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Image, Dimensions, ScrollView, FlatList, TouchableOpacity, TextInput} from 'react-native';
+import InputComentario from './InputComentario';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -12,7 +13,7 @@ export default class Post extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { foto: this.props.foto, valorComentario: '' }
+        this.state = { foto: this.props.foto }
     }
 
     carregaIcone(likeada) {
@@ -43,16 +44,16 @@ export default class Post extends Component {
         );
     }
 
-    adicionaComentario() {
-        if(this.state.valorComentario === '') return;
+    adicionaComentario(valorComentario, inputComentario) {
+        if(valorComentario === '') return;
 
-        const novaLista = [ ...this.state.foto.comentarios, { id: this.state.valorComentario, 
-            login: 'meuUsuario', usuario: 'meuUsuario', texto: this.state.valorComentario } ];
+        const novaLista = [ ...this.state.foto.comentarios, { id: valorComentario, 
+            login: 'meuUsuario', usuario: 'meuUsuario', texto: valorComentario } ];
         
         const fotoAtualizada = { ...this.state.foto, comentarios: novaLista };
         
-        this.setState({foto: fotoAtualizada, valorComentario: ''});
-        this.inputComentario.clear();
+        this.setState({foto: fotoAtualizada});
+        inputComentario.clear();
     }
 
     render() {
@@ -80,14 +81,7 @@ export default class Post extends Component {
                         </View>
                     )}
                     
-                    <View style={styles.novoComentario}>
-                        <TextInput style={styles.input} placeholder="Adicione um comentário..." 
-                                ref={input => this.inputComentario = input} 
-                                onChangeText={texto => this.setState({valorComentario: texto})} />
-                        <TouchableOpacity onPress={this.adicionaComentario.bind(this)}>
-                            <Image style={styles.icone} source={ require('../../resources/img/send.png') } />
-                        </TouchableOpacity>
-                    </View>
+                    <InputComentario comentarioCallback={this.adicionaComentario.bind(this)} />
 
                 </View>
             </View>
