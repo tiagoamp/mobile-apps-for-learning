@@ -16,7 +16,7 @@ export default class inputComentario extends Component {
                         ref={input => this.inputComentario = input} 
                         onChangeText={texto => this.setState({valorComentario: texto})} />
                 <TouchableOpacity onPress={() => { 
-                            this.props.comentarioCallback(this.state.valorComentario, this.inputComentario);
+                            this.props.comentarioCallBack(this.props.idFoto, this.state.valorComentario, this.inputComentario);
                             this.setState({ valorComentario: '' });
 
                         }} >
