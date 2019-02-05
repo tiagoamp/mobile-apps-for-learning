@@ -22,20 +22,9 @@ export default class Post extends Component {
         );
     }
 
-    adicionaComentario(valorComentario, inputComentario) {
-        if(valorComentario === '') return;
-
-        const novaLista = [ ...this.state.foto.comentarios, { id: valorComentario, 
-            login: 'meuUsuario', usuario: 'meuUsuario', texto: valorComentario } ];
-        
-        const fotoAtualizada = { ...this.state.foto, comentarios: novaLista };
-        
-        this.setState({foto: fotoAtualizada});
-        inputComentario.clear();
-    }
 
     render() {
-        const { foto, likeCallBack } = this.props;
+        const { foto, likeCallBack, comentarioCallBack } = this.props;
         
         return (
             <View>
@@ -58,7 +47,7 @@ export default class Post extends Component {
                         </View>
                     )}
                     
-                    <InputComentario comentarioCallback={this.adicionaComentario.bind(this)} />
+                    <InputComentario idFoto={foto.id} comentarioCallBack={comentarioCallBack} />
 
                 </View>
             </View>
