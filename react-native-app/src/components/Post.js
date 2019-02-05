@@ -12,25 +12,6 @@ const width = Dimensions.get('screen').width;
 
 export default class Post extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = { foto: this.props.foto }
-    }
-    
-    like(){
-        const { foto } = this.state;
-        let novaLista = [];      
-        if(!foto.likeada){
-          novaLista = [...foto.likers, {usuario: 'tiagoamp'}];
-        } else{
-          novaLista = foto.likers.filter(liker => {
-            return liker.login !== 'tiagoamp';
-          });
-        }
-        const fotoAtualizada = { ...foto, likeada: !foto.likeada, likers: novaLista }      
-        this.setState({foto: fotoAtualizada});
-    }
-
     exibeLegenda(foto) {
         if (foto.comentario === '') return;
         return (
@@ -54,8 +35,8 @@ export default class Post extends Component {
     }
 
     render() {
-        const { foto } = this.state;
-
+        const { foto, likeCallBack } = this.props;
+        
         return (
             <View>
                 <View style={styles.cabecalho} >
@@ -66,7 +47,7 @@ export default class Post extends Component {
 
                 <View style={styles.rodape}>
 
-                    <Likes foto={foto} likeCallBack={this.like.bind(this)} />
+                    <Likes foto={foto} likeCallBack={() => {likeCallBack(foto.id)}} />
 
                     {this.exibeLegenda(foto)}
 
