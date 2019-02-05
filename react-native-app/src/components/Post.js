@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Image, Dimensions, ScrollView, FlatList, TouchableOpacity, TextInput} from 'react-native';
 import InputComentario from './InputComentario';
+import Likes from './Likes';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -15,11 +16,7 @@ export default class Post extends Component {
         super(props);
         this.state = { foto: this.props.foto }
     }
-
-    carregaIcone(likeada) {
-        return likeada ? require('../../resources/img/s2-checked.png') : require('../../resources/img/s2.png');
-    }
-
+    
     like(){
         const { foto } = this.state;
         let novaLista = [];      
@@ -66,11 +63,10 @@ export default class Post extends Component {
                     <Text>{foto.usuario}</Text>
                 </View>
                 <Image source={require('../../resources/img/reactnative.png')} style={styles.foto} />
+
                 <View style={styles.rodape}>
-                    <TouchableOpacity onPress={this.like.bind(this)}>
-                        <Image style={styles.botaoDeLike} source={this.carregaIcone(foto.likeada)} />
-                    </TouchableOpacity>
-                    <Text style={styles.likes}> {foto.likers.length} curtidas</Text>
+
+                    <Likes foto={foto} likeCallBack={this.like.bind(this)} />
 
                     {this.exibeLegenda(foto)}
 
@@ -106,16 +102,8 @@ const styles = StyleSheet.create({
     width:width, 
     height:width
   }, 
-  botaoDeLike: {
-    width: 40,
-    height: 40, 
-    marginBottom: 10
-  },
   rodape: {
     margin: 10
-  }, 
-  likes: {
-    fontWeight: 'bold'
   }, 
   comentario: {
     flexDirection: 'row'
