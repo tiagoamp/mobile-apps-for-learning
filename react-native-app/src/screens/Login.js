@@ -5,14 +5,23 @@ const width = Dimensions.get('screen').width;
 
 export default class Login extends Component {
 
+    constructor() {
+        super();
+        this.state = { usuario: '', senha: '' };
+    }
+
+    efetuaLogin() {
+
+    }
+
     render() {
         return (
             <View style={styles.container}>
                 <View styles={styles.form}>
                     <Text styles={styles.titulo}>Test React Native App</Text>
-                    <TextInput styles={styles.input} placeholder="Usuário..." onChangeText={texto => this.setState({usuario: texto})}/>
-                    <TextInput styles={styles.input} placeholder="Senha..." onChangeText={texto => this.setState({senha: texto})}/>
-                    <Button title="Login" onPress={() => console.warn("Login")} />
+                    <TextInput styles={styles.input} placeholder="Usuário..." onChangeText={texto => this.setState({usuario: texto})} autoCapitalize="none" />
+                    <TextInput styles={styles.input} placeholder="Senha..." onChangeText={texto => this.setState({senha: texto})} secureTextEntry={true} />
+                    <Button title="Login" onPress={this.efetuaLogin.bind(this)} />
                 </View>                
             </View>
         );
