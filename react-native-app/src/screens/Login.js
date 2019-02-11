@@ -13,8 +13,7 @@ export default class Login extends Component {
     efetuaLogin() {
         const fakeToken = 'f@keT0ken';
         AsyncStorage.setItem('token', fakeToken);
-        AsyncStorage.setItem('usuario', this.state.usuario);
-        //return AsyncStorage.getItem('token');
+        AsyncStorage.setItem('usuario', this.state.usuario);        
     }
 
     render() {
