@@ -94,8 +94,8 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion 25
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.instaluramob"
@@ -104,6 +104,12 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     splits {
         abi {
             reset()
@@ -137,6 +143,9 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation project(':react-native-navigation')
+    // From node_modules
+    //implementation project(':react-native-navigation')
 }
 
 // Run this once to be able to run the application with BUCK
