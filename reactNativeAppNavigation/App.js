@@ -3,6 +3,10 @@ import {Platform, StyleSheet, Text, View, Button} from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
 
 class HomeScreen extends Component {
+  static navigationOptions = {
+    title: 'Home',    
+  };
+
   render() {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -23,6 +27,18 @@ class HomeScreen extends Component {
 }
 
 class DetailsScreen extends Component {
+  static navigationOptions = ({ navigation, navigationOptions }) => {
+    const { params } = navigation.state;
+    return {
+      title: params ? params.otherParam : 'A Nested Details Screen',
+      /* These values are used instead of the shared configuration! */
+      headerStyle: {
+        backgroundColor: navigationOptions.headerTintColor,
+      },
+      headerTintColor: navigationOptions.headerStyle.backgroundColor,
+    };
+  };
+
   render() {
     /* 2. Get the param, provide a fallback value if not available */
     const { navigation } = this.props;
@@ -46,6 +62,10 @@ class DetailsScreen extends Component {
           title="Go back"
           onPress={() => this.props.navigation.goBack()}
         />
+        <Button
+          title="Update the title"
+          onPress={() => this.props.navigation.setParams({otherParam: 'Updated!'})}
+        />
       </View>
     );
   }
@@ -65,7 +85,17 @@ const AppNavigator = createStackNavigator(
     Details: DetailsScreen
   },
   {
-    initialRouteName: "Home"
+    initialRouteName: "Home",
+    /* The header config from HomeScreen is now here */
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: '#f4511e',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    },
   }
 );
 
