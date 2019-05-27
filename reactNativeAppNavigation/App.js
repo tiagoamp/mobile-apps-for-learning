@@ -3,8 +3,29 @@ import {Platform, StyleSheet, Text, View, Button} from 'react-native';
 import { createStackNavigator, createAppContainer } from "react-navigation";
 
 class HomeScreen extends Component {
-  static navigationOptions = {
-    title: 'Home',    
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerTitle: 'Home',
+      headerRight: (
+        <Button
+          onPress={navigation.getParam('increaseCount')}
+          title="+1"
+          color="#fff"
+        />
+      ),
+    };
+  };
+
+  componentDidMount() {
+    this.props.navigation.setParams({ increaseCount: this._increaseCount });
+  }
+
+  state = {
+    count: 0,
+  };
+
+  _increaseCount = () => {
+    this.setState({ count: this.state.count + 1 });
   };
 
   render() {
