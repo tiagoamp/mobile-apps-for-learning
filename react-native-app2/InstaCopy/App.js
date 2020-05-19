@@ -1,33 +1,29 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+import React, {Fragment, useState} from 'react';
+import { View, Image, TextInput, FlatList } from 'react-native';
+import Cabecalho from './src/components/Cabecalho/Cabecalho';
+import Foto from './src/components/Foto/Foto';
+import Comentario from './src/components/Comentario/Comentario';
 
-import React, {Fragment} from 'react';
-import { ScrollView, View, Image, Dimensions, StyleSheet, FlatList } from 'react-native';
-import Cabecalho from './src/components/Cabecalho';
-import Foto from './src/components/Foto';
-
-const informacoes = [
-  { id:1, usuario: "Ozzy Osbourne" },
-  { id:2, usuario: "Max Cavalera" },
-  { id:3, usuario: "Tom Araya" }
-];
 
 const App = () => {
+
+  const [fotos, setFotos] = useState([
+    { id:1, usuario: "Ozzy Osbourne" },
+    { id:2, usuario: "Max Cavalera" },
+    { id:3, usuario: "Tom Araya" }
+  ]);
+
   return (
     <View>
       {
         <FlatList 
-          data={informacoes}
+          data={fotos}
           keyExtractor={item => item.id.toString()}
           renderItem={ ( { item } ) => 
             <Fragment>
               <Cabecalho nomeUsuario={item.usuario} />
               <Foto />
+              <Comentario />
             </Fragment>
           } 
         />       
